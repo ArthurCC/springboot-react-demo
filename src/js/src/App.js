@@ -1,3 +1,4 @@
+import { ExpandAltOutlined } from "@ant-design/icons";
 import { Avatar, Button, Empty, Modal, notification, Spin, Table } from "antd";
 import { useEffect, useState } from "react";
 import "./App.css";
@@ -5,14 +6,14 @@ import { getAllStudents, getStudentCourses } from "./client";
 import { Container } from "./Container";
 import { Footer } from "./Footer";
 import { AddStudentForm } from "./forms/AddStudentForm";
-import { StudentDetailModal } from "./StudentDetail";
+import { StudentDetailModal } from "./StudentDetailModal";
 
 /**
  * App component
  * @returns
  */
 export const App = () => {
-    const antdColumns = [
+    const studentTableColumns = [
         {
             title: "",
             key: "avatar",
@@ -60,11 +61,10 @@ export const App = () => {
             key: "courses",
             render: (_, student) => (
                 <Button
+                    icon={<ExpandAltOutlined />}
                     key={"courses_" + student.id}
                     onClick={() => onShowCoursesClick(student)}
-                >
-                    Courses
-                </Button>
+                />
             ),
         },
     ];
@@ -76,10 +76,8 @@ export const App = () => {
         studentDetail: null,
         isStudentDetailModalOpen: false,
     });
-    // const [isFetching, setIsFetching] = useState(false);
 
     // for alert messages
-    // const [messageApi, contextHolder] = message.useMessage();
     const [api, contextHolder] = notification.useNotification();
 
     // get all students on component load
@@ -172,7 +170,7 @@ export const App = () => {
             ) : state.students && state.students.length ? (
                 <Table
                     dataSource={state.students}
-                    columns={antdColumns}
+                    columns={studentTableColumns}
                     rowKey="id"
                     pagination={false}
                 />
