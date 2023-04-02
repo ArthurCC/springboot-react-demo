@@ -5,6 +5,7 @@ import { getAllStudents, getStudentCourses } from "./client";
 import { Container } from "./Container";
 import { Footer } from "./Footer";
 import { AddStudentForm } from "./forms/AddStudentForm";
+import { StudentDetailModal } from "./StudentDetail";
 
 /**
  * App component
@@ -73,7 +74,7 @@ export const App = () => {
         isFetching: true,
         isAddStudentModalOpen: false,
         studentDetail: null,
-        isCourseModalOpen: false,
+        isStudentDetailModalOpen: false,
     });
     // const [isFetching, setIsFetching] = useState(false);
 
@@ -91,7 +92,7 @@ export const App = () => {
                     isFetching: false,
                     isAddStudentModalOpen: false,
                     studentDetail: null,
-                    isCourseModalOpen: false,
+                    isStudentDetailModalOpen: false,
                 });
             } catch (error) {
                 console.error(
@@ -103,7 +104,7 @@ export const App = () => {
                     isFetching: false,
                     isAddStudentModalOpen: false,
                     studentDetail: null,
-                    isCourseModalOpen: false,
+                    isStudentDetailModalOpen: false,
                 });
 
                 api["error"]({
@@ -145,7 +146,7 @@ export const App = () => {
             setState({
                 ...state,
                 studentDetail: response.data.student,
-                isCourseModalOpen: true,
+                isStudentDetailModalOpen: true,
             });
         } catch (error) {
             console.error(
@@ -203,41 +204,13 @@ export const App = () => {
 
             {/* Student course modal */}
             {state.studentDetail ? (
-                <Modal
-                    title="Student course modal"
-                    open={state.isCourseModalOpen}
-                    onCancel={() =>
-                        setState({ ...state, isCourseModalOpen: false })
+                <StudentDetailModal
+                    studentDetail={state.studentDetail}
+                    isStudentDetailModalOpen={state.isStudentDetailModalOpen}
+                    handleCancel={() =>
+                        setState({ ...state, isStudentDetailModalOpen: false })
                     }
-                    footer={[]}
-                >
-                    {/* TODO : improve this */}
-                    <h1>
-                        {state.studentDetail.firstName}{" "}
-                        {state.studentDetail.lastName}
-                    </h1>
-
-                    <p>{state.studentDetail.email}</p>
-                    <p>{state.studentDetail.gender}</p>
-
-                    {state.studentDetail.courses &&
-                    state.studentDetail.courses.length ? (
-                        state.studentDetail.courses.map((course) => (
-                            <div key={course.id}>
-                                <p>{course.id}</p>
-                                <p>{course.name}</p>
-                                <p>{course.description}</p>
-                                <p>{course.department}</p>
-                                <p>{course.teacherName}</p>
-                                <p>{course.startDate}</p>
-                                <p>{course.endDate}</p>
-                                <p>{course.grade}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <h1>No courses</h1>
-                    )}
-                </Modal>
+                />
             ) : null}
         </Container>
     );
