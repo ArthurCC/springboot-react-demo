@@ -72,7 +72,7 @@ export const App = () => {
         students: [],
         isFetching: true,
         isAddStudentModalOpen: false,
-        studentCourses: [],
+        studentDetail: null,
         isCourseModalOpen: false,
     });
     // const [isFetching, setIsFetching] = useState(false);
@@ -90,7 +90,7 @@ export const App = () => {
                     students: response.data.students,
                     isFetching: false,
                     isAddStudentModalOpen: false,
-                    studentCourses: [],
+                    studentDetail: null,
                     isCourseModalOpen: false,
                 });
             } catch (error) {
@@ -102,7 +102,7 @@ export const App = () => {
                     students: [],
                     isFetching: false,
                     isAddStudentModalOpen: false,
-                    studentCourses: [],
+                    studentDetail: null,
                     isCourseModalOpen: false,
                 });
 
@@ -144,7 +144,7 @@ export const App = () => {
             console.log(response);
             setState({
                 ...state,
-                studentCourses: response.data.studentCourses,
+                studentDetail: response.data.student,
                 isCourseModalOpen: true,
             });
         } catch (error) {
@@ -202,29 +202,43 @@ export const App = () => {
             </Modal>
 
             {/* Student course modal */}
-            <Modal
-                title="Student course modal"
-                open={state.isCourseModalOpen}
-                onCancel={() =>
-                    setState({ ...state, isCourseModalOpen: false })
-                }
-                footer={[]}
-            >
-                {/* TODO : improve this */}
-                <h1>Student courses</h1>
-                {state.studentCourses.map((sc) => (
-                    <div key={sc.id}>
-                        <p>{sc.id}</p>
-                        <p>{sc.name}</p>
-                        <p>{sc.description}</p>
-                        <p>{sc.department}</p>
-                        <p>{sc.teacherName}</p>
-                        <p>{sc.startDate}</p>
-                        <p>{sc.endDate}</p>
-                        <p>{sc.grade}</p>
-                    </div>
-                ))}
-            </Modal>
+            {state.studentDetail ? (
+                <Modal
+                    title="Student course modal"
+                    open={state.isCourseModalOpen}
+                    onCancel={() =>
+                        setState({ ...state, isCourseModalOpen: false })
+                    }
+                    footer={[]}
+                >
+                    {/* TODO : improve this */}
+                    <h1>
+                        {state.studentDetail.firstName}{" "}
+                        {state.studentDetail.lastName}
+                    </h1>
+
+                    <p>{state.studentDetail.email}</p>
+                    <p>{state.studentDetail.gender}</p>
+
+                    {state.studentDetail.courses &&
+                    state.studentDetail.courses.length ? (
+                        state.studentDetail.courses.map((course) => (
+                            <div key={course.id}>
+                                <p>{course.id}</p>
+                                <p>{course.name}</p>
+                                <p>{course.description}</p>
+                                <p>{course.department}</p>
+                                <p>{course.teacherName}</p>
+                                <p>{course.startDate}</p>
+                                <p>{course.endDate}</p>
+                                <p>{course.grade}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <h1>No courses</h1>
+                    )}
+                </Modal>
+            ) : null}
         </Container>
     );
 };

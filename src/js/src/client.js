@@ -15,6 +15,6 @@ export const postStudent = async (student) => {
 };
 
 export const getStudentCourses = async (studentId) => {
-    const res = await axios.get(`/api/courses/${studentId}`);
+    const res = await axios.get(`/api/students/${studentId}`);
     return res.data;
 };

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.camposcosta.springbootreactdemo.enumeration.Gender;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class Student {
     @NotNull(message = "cannot be null")
     private Gender gender;
 
+    @JsonProperty("courses")
     @JsonInclude(Include.NON_EMPTY)
     private List<StudentCourse> studentCourses;
 }
