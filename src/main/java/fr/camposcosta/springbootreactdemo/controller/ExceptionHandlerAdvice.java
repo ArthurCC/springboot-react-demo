@@ -17,6 +17,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import fr.camposcosta.springbootreactdemo.exception.EmailAlreadyExistsException;
+import fr.camposcosta.springbootreactdemo.exception.ResourceNotFoundException;
 import fr.camposcosta.springbootreactdemo.model.Response;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,6 +31,14 @@ public class ExceptionHandlerAdvice {
 
                 return buildErrorResponse(
                                 ex, request, HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<Response<Void>> handleEmailAlreadyExistsException(ResourceNotFoundException ex,
+                        HttpServletRequest request) {
+
+                return buildErrorResponse(
+                                ex, request, HttpStatus.NOT_FOUND, ex.getMessage());
         }
 
         @ExceptionHandler(NoHandlerFoundException.class)

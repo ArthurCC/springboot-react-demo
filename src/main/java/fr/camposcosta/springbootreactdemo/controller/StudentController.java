@@ -2,6 +2,7 @@ package fr.camposcosta.springbootreactdemo.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +34,11 @@ public class StudentController {
                 this.studentService = studentService;
         }
 
+        /**
+         * Get all students, courses not being fetched
+         * 
+         * @return
+         */
         @GetMapping("/students")
         public ResponseEntity<Response<List<Student>>> getAllStudents() {
 
@@ -50,6 +57,25 @@ public class StudentController {
         @GetMapping("/student")
         public ResponseEntity<Response<Student>> getByEmail(@RequestParam String email) {
                 Student student = studentService.findByEmail(email);
+
+                return ResponseEntity.ok(
+                                new Response<>(
+                                                LocalDateTime.now(),
+                                                HttpStatus.OK,
+                                                ImmutableMap.of("student", student)));
+        }
+
+        /**
+         * Get student with courses
+         * 
+         * @param studentId
+         * @return
+         */
+        @GetMapping("/students/{studentId}")
+        public ResponseEntity<Response<Student>> getStudentById(@PathVariable UUID studentId) {
+                log.info("getStudentById called");
+
+                Student student = studentService.findStudentById(studentId);
 
                 return ResponseEntity.ok(
                                 new Response<>(

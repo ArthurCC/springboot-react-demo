@@ -1,5 +1,6 @@
 package fr.camposcosta.springbootreactdemo.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import fr.camposcosta.springbootreactdemo.enumeration.Gender;
 import fr.camposcosta.springbootreactdemo.exception.EmailAlreadyExistsException;
+import fr.camposcosta.springbootreactdemo.exception.ResourceNotFoundException;
 import fr.camposcosta.springbootreactdemo.model.Student;
 
 @Service
@@ -19,7 +21,8 @@ public class StudentService {
             rs.getString("first_name"),
             rs.getString("last_name"),
             rs.getString("email"),
-            Gender.valueOf(rs.getString("gender")));
+            Gender.valueOf(rs.getString("gender")),
+            Collections.emptyList());
 
     private static final String FIND_ALL_STUDENTS_QUERY = "SELECT * FROM students";
     private static final String FIND_STUDENT_BY_EMAIL_QUERY = "SELECT * FROM students WHERE email = ?";
@@ -27,11 +30,20 @@ public class StudentService {
     // Need to cast to ::gender in the query because Postgres doesn't know how to
     // convert String to the gender type
     private static final String CREATE_STUDENT_QUERY = "INSERT INTO students (id, first_name, last_name, email, gender) VALUES (?, ?, ?, ?, ?::gender)";
+    private static final String FIND_STUDENT_WITH_COURSES = "SELECT s.id AS student_id, s.first_name, s.last_name, s.email, s.gender, c.id AS course_id, c.name, c.description, c.department, c.teacher_name, start_date, end_date, grade "
+            + "FROM students s "
+            + "LEFT JOIN student_course ON s.id = student_id "
+            + "LEFT JOIN courses c ON course_id = c.id "
+            + "WHERE s.id = ?";
 
     private JdbcTemplate jdbcTemplate;
+    private StudentCoursesResultSetExtractor studentCoursesResultSetExtractor;
 
-    public StudentService(JdbcTemplate jdbcTemplate) {
+    public StudentService(
+            JdbcTemplate jdbcTemplate,
+            StudentCoursesResultSetExtractor studentCoursesResultSetExtractor) {
         this.jdbcTemplate = jdbcTemplate;
+        this.studentCoursesResultSetExtractor = studentCoursesResultSetExtractor;
     }
 
     public List<Student> findAll() {
@@ -44,6 +56,19 @@ public class StudentService {
                 FIND_STUDENT_BY_EMAIL_QUERY,
                 STUDENT_ROW_MAPPER,
                 email);
+    }
+
+    /**
+     * Get student by id with courses info
+     * 
+     * @param studentId
+     * @return
+     */
+    public Student findStudentById(UUID studentId) {
+        return jdbcTemplate.query(FIND_STUDENT_WITH_COURSES, studentCoursesResultSetExtractor, studentId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
+                                String.format("Student with [uuid=%s] not found", studentId)));
     }
 
     public Student createStudent(Student student) {

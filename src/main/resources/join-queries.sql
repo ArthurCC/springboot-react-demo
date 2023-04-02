@@ -21,8 +21,8 @@ SELECT first_name, last_name FROM students
 SELECT * FROM table_1 INNER JOIN table_2 USING (column_name);
 
 -- Select all courses taken by a specific student
-SELECT c.id, c.name, c.description, c.department, c.teacher_name, start_date, end_date, grade
+SELECT s.id AS student_id, s.first_name, s.last_name, s.email, s.gender, c.id AS course_id, c.name, c.description, c.department, c.teacher_name, start_date, end_date, grade
     FROM students s
-    INNER JOIN student_course ON s.id = student_id
-    INNER JOIN courses c ON course_id = c.id
+    LEFT JOIN student_course ON s.id = student_id
+    LEFT JOIN courses c ON course_id = c.id
     WHERE s.id = 'c638b3d4-9460-4a0e-a46b-ae77b1186e61';
