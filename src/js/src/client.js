@@ -5,16 +5,23 @@ import axios from "axios";
  * @returns
  */
 export const getAllStudents = async () => {
-    const res = await axios.get("/api/students");
+    const res = await axios.get(
+        `${process.env.REACT_APP_STUDENT_API_URL}/api/students`
+    );
     return res.data;
 };
 
 export const postStudent = async (student) => {
-    const res = await axios.post("/api/students", student);
+    const res = await axios.post(
+        `${process.env.REACT_APP_STUDENT_API_URL}/api/students`,
+        student
+    );
     return res.data;
 };
 
 export const getStudentCourses = async (studentId) => {
-    const res = await axios.get(`/api/students/${studentId}`);
+    const res = await axios.get(
+        `${process.env.REACT_APP_STUDENT_API_URL}/api/students/${studentId}`
+    );
     return res.data;
 };
