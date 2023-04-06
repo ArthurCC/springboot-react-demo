@@ -92,6 +92,17 @@
 							<goal>npm</goal>
 						</goals>
 					</execution>
+					<!-- run npm tests -->
+					<execution>
+						<id>npm-test</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<arguments>test</arguments>
+						</configuration>
+					</execution>
 					<!-- run npm build to create prod build -->
 					<execution>
 						<id>npm-build</id>
