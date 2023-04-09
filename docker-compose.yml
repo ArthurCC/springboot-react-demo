@@ -1,6 +1,5 @@
 version: "3.8"
 
-# TODO : adapt this
 services:
     springboot-react-demo-app:
         image: arthuru44/springboot-react-demo:0.0.1-SNAPSHOT
