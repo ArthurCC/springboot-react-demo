@@ -7,4 +7,4 @@ docker run --name springboot-react-demo-db -p 5432:5432 -v springboot-react-demo
 docker rmi arthuru44/springboot-react-demo:0.0.1-SNAPSHOT
 mvn clean package
 docker build -t arthuru44/springboot-react-demo:0.0.1-SNAPSHOT .
-docker run -p 8080:8080 -d --network springboot-react-demo-network --name springboot-react-demo-app arthuru44/springboot-react-demo:0.0.1-SNAPSHOT
+docker run -p 8080:8080 -d --network springboot-react-demo-network --name springboot-react-demo-app -e SPRING_DATASOURCE_URL=jdbc:postgresql://springboot-react-demo-db:5432/springbootreactdemo arthuru44/springboot-react-demo:0.0.1-SNAPSHOT
