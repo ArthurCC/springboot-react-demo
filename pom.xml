@@ -149,6 +149,31 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- dockerfile plugin to build and push image -->
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.42.1</version>
+
+				<configuration>
+					<images>
+						<image>
+							<name>arthuru44/springboot-react-demo:${project.version}</name>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>build</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
