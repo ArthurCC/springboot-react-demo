@@ -1,0 +1,39 @@
+version: "3.8"
+
+# TODO : adapt this
+services:
+    springboot-react-demo-app:
+        image: arthuru44/springboot-react-demo:0.0.1-SNAPSHOT
+        build:
+            context: .
+        container_name: springboot-react-demo-app
+        ports:
+            - 8080:8080
+        depends_on:
+            - springboot-react-demo-db
+        networks:
+            - springboot-react-demo-network
+        # environment:
+        #     - SPRING_DATASOURCE_URL=jdbc:postgresql://springboot-react-demo-db:5432/springbootreactdemo
+
+    springboot-react-demo-db:
+        image: postgres:15-alpine
+        container_name: springboot-react-demo-db
+        ports:
+            - 5432:5432
+        volumes:
+            - springboot-react-demo-data:/var/lib/postgresql/data
+        networks:
+            - springboot-react-demo-network
+        environment:
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=springbootreactdemo
+
+networks:
+    springboot-react-demo-network:
+        name: springboot-react-demo-network
+
+# First time creates a volume. Docker reuses the same volume when you run the command subsequently.
+volumes:
+    springboot-react-demo-data:
+        name: springboot-react-demo-data
