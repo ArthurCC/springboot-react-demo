@@ -5,3 +5,5 @@ ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 # Configure this container for running as an executable. Run jar file
 ENTRYPOINT ["java", "-jar", "/app.jar"]
+# With profile
+# ENTRYPOINT ["java", "-Dspring.profiles.active=test", "-jar", "/app.jar"]

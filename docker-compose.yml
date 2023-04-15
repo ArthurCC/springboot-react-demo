@@ -12,6 +12,8 @@ services:
             - springboot-react-demo-network
         environment:
             - SPRING_DATASOURCE_URL=jdbc:postgresql://springboot-react-demo-db:5432/springbootreactdemo
+            # With profile
+            # - SPRING_PROFILES_ACTIVE=test
 
     springboot-react-demo-db:
         image: postgres:15-alpine
