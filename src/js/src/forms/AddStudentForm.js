@@ -47,7 +47,7 @@ export const AddStudentForm = ({ onFormSuccess, onFormFailure }) => (
 
                     onFormFailure(
                         error.message,
-                        error.response.data.errorMessage
+                        error.response?.data.errorMessage
                     );
                     // Keep submit button active if post failed
                     setSubmitting(false);

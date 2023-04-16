@@ -25,3 +25,10 @@ export const getStudentCourses = async (studentId) => {
     );
     return res.data;
 };
+
+export const deleteStudent = async (studentId) => {
+    const res = await axios.delete(
+        `${process.env.REACT_APP_STUDENT_API_URL}/api/students/${studentId}`
+    );
+    return res.data;
+};

@@ -1,12 +1,12 @@
 import { ExpandAltOutlined } from "@ant-design/icons";
-import { Avatar, Button, Empty, Modal, notification, Spin, Table } from "antd";
+import { Avatar, Button, Empty, Modal, Spin, Table, notification } from "antd";
 import { useEffect, useState } from "react";
 import "./App.css";
-import { getAllStudents, getStudentCourses } from "./client";
 import { Container } from "./Container";
 import { Footer } from "./Footer";
-import { AddStudentForm } from "./forms/AddStudentForm";
 import { StudentDetailModal } from "./StudentDetailModal";
+import { deleteStudent, getAllStudents, getStudentCourses } from "./client";
+import { AddStudentForm } from "./forms/AddStudentForm";
 
 /**
  * App component
@@ -62,9 +62,28 @@ export const App = () => {
             render: (_, student) => (
                 <Button
                     icon={<ExpandAltOutlined />}
-                    key={"courses_" + student.id}
-                    onClick={() => onShowCoursesClick(student)}
+                    key={`courses_${student.id}`}
+                    onClick={() => onShowCoursesClick(student.id)}
                 />
+            ),
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: (_, student) => (
+                <Button
+                    key={`delete_${student.id}`}
+                    onClick={() =>
+                        setState({
+                            ...state,
+                            studentDetail: student,
+                            isDeleteStudentModalOpen: true,
+                        })
+                    }
+                    danger
+                >
+                    Delete
+                </Button>
             ),
         },
     ];
@@ -75,6 +94,7 @@ export const App = () => {
         isAddStudentModalOpen: false,
         studentDetail: null,
         isStudentDetailModalOpen: false,
+        isDeleteStudentModalOpen: false,
     });
 
     // for alert messages
@@ -91,6 +111,7 @@ export const App = () => {
                     isAddStudentModalOpen: false,
                     studentDetail: null,
                     isStudentDetailModalOpen: false,
+                    isDeleteStudentModalOpen: false,
                 });
             } catch (error) {
                 console.error(
@@ -103,11 +124,12 @@ export const App = () => {
                     isAddStudentModalOpen: false,
                     studentDetail: null,
                     isStudentDetailModalOpen: false,
+                    isDeleteStudentModalOpen: false,
                 });
 
                 api["error"]({
                     message: error.message,
-                    description: error.response.data.errorMessage,
+                    description: error.response?.data.errorMessage,
                 });
             }
         })();
@@ -137,10 +159,9 @@ export const App = () => {
             description: errorDescription,
         });
 
-    const onShowCoursesClick = async (student) => {
+    const onShowCoursesClick = async (studentId) => {
         try {
-            const response = await getStudentCourses(student.id);
-            console.log(response);
+            const response = await getStudentCourses(studentId);
             setState({
                 ...state,
                 studentDetail: response.data.student,
@@ -153,7 +174,28 @@ export const App = () => {
             );
             api["error"]({
                 message: error.message,
-                description: error.response.data.errorMessage,
+                description: error.response?.data.errorMessage,
+            });
+        }
+    };
+
+    const onConfirmDeleteStudentClick = async (studentId) => {
+        try {
+            await deleteStudent(studentId);
+            setState({
+                ...state,
+                students: state.students.filter((s) => s.id !== studentId),
+                isDeleteStudentModalOpen: false,
+            });
+            api["success"]({
+                message: "Employee deleted",
+            });
+        } catch (error) {
+            console.error("Error while deleting student", error);
+            setState({ ...state, isDeleteStudentModalOpen: false });
+            api["error"]({
+                message: error.message,
+                description: error.response?.data.errorMessage,
             });
         }
     };
@@ -209,6 +251,21 @@ export const App = () => {
                         setState({ ...state, isStudentDetailModalOpen: false })
                     }
                 />
+            ) : null}
+
+            {state.studentDetail ? (
+                <Modal
+                    title="Delete student"
+                    open={state.isDeleteStudentModalOpen}
+                    onOk={() =>
+                        onConfirmDeleteStudentClick(state.studentDetail.id)
+                    }
+                    onCancel={() =>
+                        setState({ ...state, isDeleteStudentModalOpen: false })
+                    }
+                >
+                    Delete student {state.studentDetail.id} permanently ?
+                </Modal>
             ) : null}
         </Container>
     );
