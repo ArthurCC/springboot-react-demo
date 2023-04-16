@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>fr.camposcosta</groupId>
 	<artifactId>spring-boot-react-demo</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>spring-boot-react-demo</name>
 	<description>Demo project for Spring Boot</description>
 
