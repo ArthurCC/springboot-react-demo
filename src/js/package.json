@@ -16,7 +16,8 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build",
+        "build": "sh -ac '. .env; react-scripts build'",
+        "build:prod": "sh -ac '. .env.production; react-scripts build'",
         "test": "react-scripts test --watchAll=false --transformIgnorePatterns \"node_modules/(?!axios)/\"",
         "eject": "react-scripts eject"
     },
