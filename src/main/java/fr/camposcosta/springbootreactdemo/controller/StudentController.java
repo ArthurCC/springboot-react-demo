@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -111,5 +112,20 @@ public class StudentController {
 
                 return ResponseEntity.ok(
                                 new Response<>(LocalDateTime.now(), HttpStatus.OK));
+        }
+
+        @PutMapping("/students/{studentId}")
+        public ResponseEntity<Response<Student>> updateStudent(
+                        @PathVariable UUID studentId, @RequestBody @Valid Student student) {
+
+                log.info("updateStudent called");
+
+                Student updatedStudent = studentService.updateStudent(studentId, student);
+
+                return ResponseEntity.ok(
+                                new Response<>(
+                                                LocalDateTime.now(),
+                                                HttpStatus.OK,
+                                                ImmutableMap.of("student", updatedStudent)));
         }
 }

@@ -36,9 +36,12 @@ public class StudentService {
                         + "LEFT JOIN courses c ON course_id = c.id "
                         + "WHERE s.id = ?";
         private static final String DELETE_STUDENT_QUERY = "DELETE FROM students where id = ?";
+        private static final String UPDATE_STUDENT_QUERY = "UPDATE students "
+                        + "SET first_name = ?, last_name = ?, gender = ?::gender "
+                        + "WHERE id = ?";
 
-        private JdbcTemplate jdbcTemplate;
-        private StudentCoursesResultSetExtractor studentCoursesResultSetExtractor;
+        private final JdbcTemplate jdbcTemplate;
+        private final StudentCoursesResultSetExtractor studentCoursesResultSetExtractor;
 
         public StudentService(
                         JdbcTemplate jdbcTemplate,
@@ -107,5 +110,23 @@ public class StudentService {
                         throw new ResourceNotFoundException(
                                         String.format("Student with [uuid=%s] not found", studentId));
                 }
+        }
+
+        public Student updateStudent(UUID studentId, Student student) {
+
+                int result = jdbcTemplate.update(
+                                UPDATE_STUDENT_QUERY,
+                                student.getFirstName(),
+                                student.getLastName(),
+                                student.getGender().name(),
+                                studentId);
+
+                if (result == 0) {
+                        throw new ResourceNotFoundException(
+                                        String.format("Student with [uuid=%s] not found", studentId));
+                }
+
+                student.setId(studentId);
+                return student;
         }
 }
