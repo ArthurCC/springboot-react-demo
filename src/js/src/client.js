@@ -32,3 +32,11 @@ export const deleteStudent = async (studentId) => {
     );
     return res.data;
 };
+
+export const updateStudent = async (studentId, student) => {
+    const res = await axios.put(
+        `${process.env.REACT_APP_STUDENT_API_URL}/api/students/${studentId}`,
+        student
+    );
+    return res.data;
+};

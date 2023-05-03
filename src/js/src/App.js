@@ -71,19 +71,33 @@ export const App = () => {
             title: "Actions",
             key: "actions",
             render: (_, student) => (
-                <Button
-                    key={`delete_${student.id}`}
-                    onClick={() =>
-                        setState({
-                            ...state,
-                            studentDetail: student,
-                            isDeleteStudentModalOpen: true,
-                        })
-                    }
-                    danger
-                >
-                    Delete
-                </Button>
+                <>
+                    <Button
+                        key={`update_${student.id}`}
+                        onClick={() =>
+                            setState({
+                                ...state,
+                                studentDetail: student,
+                                isAddStudentModalOpen: true,
+                            })
+                        }
+                    >
+                        Update
+                    </Button>
+                    <Button
+                        key={`delete_${student.id}`}
+                        onClick={() =>
+                            setState({
+                                ...state,
+                                studentDetail: student,
+                                isDeleteStudentModalOpen: true,
+                            })
+                        }
+                        danger
+                    >
+                        Delete
+                    </Button>
+                </>
             ),
         },
     ];
@@ -136,7 +150,12 @@ export const App = () => {
     }, [api]);
 
     // Add student modal functions
-    const showModal = () => setState({ ...state, isAddStudentModalOpen: true });
+    const showModal = () =>
+        setState({
+            ...state,
+            studentDetail: null,
+            isAddStudentModalOpen: true,
+        });
 
     const handleCancel = () =>
         setState({ ...state, isAddStudentModalOpen: false });
@@ -150,6 +169,20 @@ export const App = () => {
 
         api["success"]({
             message: "Employee added successfully",
+        });
+    };
+
+    const onFormSuccessUpdate = (student) => {
+        setState({
+            ...state,
+            students: state.students.map((s) =>
+                s.id === student.id ? student : s
+            ),
+            isAddStudentModalOpen: false,
+        });
+
+        api["success"]({
+            message: "Employee updated successfully",
         });
     };
 
@@ -237,8 +270,13 @@ export const App = () => {
             >
                 <h1>Add student form</h1>
                 <AddStudentForm
-                    onFormSuccess={onFormSuccess}
+                    onFormSuccess={
+                        state.studentDetail
+                            ? onFormSuccessUpdate
+                            : onFormSuccess
+                    }
                     onFormFailure={onFormFailure}
+                    studentDetail={state.studentDetail}
                 />
             </Modal>
 

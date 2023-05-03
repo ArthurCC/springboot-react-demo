@@ -1,15 +1,24 @@
 import { Button, Input, Tag } from "antd";
 import { Field, Formik } from "formik";
-import { postStudent } from "../client";
+import { postStudent, updateStudent } from "../client";
 
-export const AddStudentForm = ({ onFormSuccess, onFormFailure }) => (
+export const AddStudentForm = ({
+    onFormSuccess,
+    onFormFailure,
+    studentDetail,
+}) => (
     <Formik
-        initialValues={{
-            firstName: "",
-            lastName: "",
-            email: "",
-            gender: "MALE",
-        }}
+        enableReinitialize
+        initialValues={
+            studentDetail
+                ? studentDetail
+                : {
+                      firstName: "",
+                      lastName: "",
+                      email: "",
+                      gender: "MALE",
+                  }
+        }
         validate={(values) => {
             const errors = {};
             if (!values.firstName.trim()) {
@@ -29,13 +38,18 @@ export const AddStudentForm = ({ onFormSuccess, onFormFailure }) => (
         }}
         onSubmit={(values, { resetForm, setSubmitting }) => {
             (async () => {
+                const studentInput = {
+                    firstName: values.firstName.trim(),
+                    lastName: values.lastName.trim(),
+                    email: values.email,
+                    gender: values.gender,
+                };
+
+                // API call
                 try {
-                    const response = await postStudent({
-                        firstName: values.firstName.trim(),
-                        lastName: values.lastName.trim(),
-                        email: values.email,
-                        gender: values.gender,
-                    });
+                    const response = studentDetail
+                        ? await updateStudent(studentDetail.id, studentInput)
+                        : await postStudent(studentInput);
 
                     onFormSuccess(response.data.student);
                     resetForm();
@@ -109,6 +123,7 @@ export const AddStudentForm = ({ onFormSuccess, onFormFailure }) => (
                     onBlur={handleBlur}
                     value={values.email}
                     placeholder="email"
+                    disabled={studentDetail}
                 />
                 <br />
                 <div role="group" aria-labelledby="my-radio-group">
